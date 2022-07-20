@@ -1,0 +1,11 @@
+source/.vsconfig
+source/Assembly-CSharp.csproj
+source/Assembly-CSharp-Editor.csproj
+source/source.sln
+source/.vs/source/v16/.suo
+source/.vs/source/v16/Browse.VC.db
+source/Library/
+source/obj/
+source/Logs/
+source/Packages/
+source/UserSettings/
