@@ -8,24 +8,26 @@ public class XepHinhPixel : MonoBehaviour
     float count = 0;
     float duration = 0.25f;
     Material material;
-    MaterialPropertyBlock materialProperty;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         material = GetComponent<Renderer>().material;
 
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (count > 0)
-        {
-            count -= Time.deltaTime;
+        //if (count > 0)
+        //{
+        //    count -= Time.deltaTime;
 
-            material.SetFloat("_Anim", Mathf.Clamp(1f - (count / duration), 0f, 1f));
-        }
+        //    material.SetFloat("_Anim", Mathf.Clamp(1f - (count / duration), 0f, 1f));
+        //}
+    }
+
+    public void SetPieceNumberBGColor(Color color)
+    {
+        material.SetColor("_BackgroundColor", color);
     }
 
     public void Play()

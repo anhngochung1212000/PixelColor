@@ -6,7 +6,6 @@ public class XepHinhControl : MonoBehaviour
 {
     bool isMouseDown;
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -29,13 +28,13 @@ public class XepHinhControl : MonoBehaviour
 
         if (isMouseDown)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                //Select stage    
-                hit.transform.gameObject.GetComponent<XepHinhPixel>().Play();
-            }
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //RaycastHit hit;
+            //if (Physics.Raycast(ray, out hit))
+            //{
+            //    //Select stage    
+            //    hit.transform.gameObject.GetComponent<XepHinhPixel>().Play();
+            //}
         }
     }
 }
