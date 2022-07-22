@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 5efd4b98d318c0f47a12b5495a9a12e3
+labels:
+- 3D
+- Conversion
+- Particle
+- ParticleSystem
+- Voxel
+- Voxels
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

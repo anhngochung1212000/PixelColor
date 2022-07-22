@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: d3caa4ff6203bc649b9f3543004c8206
+labels:
+- 3D
+- Blocks
+- Conversion
+- Exporter
+- Voxel
+- Voxels
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

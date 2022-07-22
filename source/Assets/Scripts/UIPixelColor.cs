@@ -10,14 +10,9 @@ public class UIPixelColor : MonoBehaviour
     RectTransform content;
     Dictionary<int, UIColorItem> colorItemDic = new Dictionary<int, UIColorItem>();
     [HideInInspector] public UIColorItem colorItemSelected;
-
-
-    Camera mainCamera;
-    public float zoomSpeed;
     void Awake()
     {
         XepHinhSo.onLoadUIColorItem += OnLoadUIColorItem;
-        mainCamera = Camera.main;
     }
 
     void OnDestroy()
@@ -48,30 +43,33 @@ public class UIPixelColor : MonoBehaviour
 
         colorItemSelected = colorItemDic[0];
         colorItemSelected.Selected(true);
+        CameraController.Instance.hasMainModel = true;
+        CameraController.Instance.OnZoomComplete();
     }
-    float delta = 0.5f;
-    float max = 1.5f;
-    float min = 0.2f;
 
     public void ZoomInCamera()
     {
-        if (mainCamera.orthographicSize - delta <= min)
-        {
-            mainCamera.DOOrthoSize(min, 0.25f);
-            return;
-        }
-
-        mainCamera.DOOrthoSize(mainCamera.orthographicSize - delta, 0.25f);
+        CameraController.Instance.ZoomInCamera();
     }
 
     public void ZoomOutCamera()
     {
-        if (mainCamera.orthographicSize + delta >= max)
-        {
-            mainCamera.DOOrthoSize(max, 0.25f);
-            return;
-        }
-           
-        mainCamera.DOOrthoSize(mainCamera.orthographicSize + delta, 0.25f);
+        CameraController.Instance.ZoomOutCamera();
     }
+
+    public void OnPaintButtonClicked()
+    {
+        XepHinhSo.Instance.PaintPieces();
+    }
+
+    public void OnBackButtonClicked()
+    {
+        CameraController.Instance.BackToRootPoint();
+    }
+
+    public void OnHintButtonClicked()
+    {
+        XepHinhSo.Instance.Hint();
+    }
+
 }

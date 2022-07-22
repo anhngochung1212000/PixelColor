@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-
+using DG.Tweening;
 public class XepHinhSo : MonoBehaviour
 {
     public static XepHinhSo Instance;
@@ -22,7 +22,7 @@ public class XepHinhSo : MonoBehaviour
     List<Color> colors = new List<Color>();
     string colorDefaultStr = "#A1A1A1";
     Material tempMat;
-    int numberSelected = 0;
+    [HideInInspector]public int numberSelected = 0;
     bool isGenerate;
     Camera mainCamera;
     List<GameObject> pieces = new List<GameObject>();
@@ -74,6 +74,8 @@ public class XepHinhSo : MonoBehaviour
                 temp.transform.localScale = Vector3.one * disY;
 
                 var number = colors.FindIndex(p => p.CompareTwoColor(tempColor));
+                piecePixel.number = number;
+
                 List<XepHinhPixel> xepHinhPixels;
                 if (pieceDic.ContainsKey(number))
                     xepHinhPixels = pieceDic[number];
@@ -98,7 +100,7 @@ public class XepHinhSo : MonoBehaviour
         isGenerate = true;
     }
 
-    void GeneratePiecePixel(bool isMainModel)
+    public void GenerateColorOfPiece(bool isMainModel)
     {
         var texture2D = isMainModel ? textureModel : textureModelGray;
         int index = 0;
@@ -111,6 +113,8 @@ public class XepHinhSo : MonoBehaviour
                 if (tempColor.CompareTwoColor(Color.white) || tempColor.a < alphaValue)
                     continue;
 
+               
+
                 if(index >= pieces.Count)
                 {
                     Debug.LogError("index out of range!");
@@ -118,9 +122,38 @@ public class XepHinhSo : MonoBehaviour
                 }
 
                 GameObject temp = pieces[index];
+                index++;
+
+                if (!isMainModel && temp.GetComponent<XepHinhPixel>().isUnlock)
+                    continue;
+
                 tempMat = temp.GetComponent<Renderer>().material;
                 tempMat.SetColor("_BaseColor", tempColor);
-                tempMat.SetFloat("_Anim", isMainModel ? 0 : 1);
+               
+            }
+        }
+    }
+
+    public void AnimationBlockPiece(bool isMainModel)
+    {
+        var texture2D = isMainModel ? textureModel : textureModelGray;
+        int index = 0;
+        for (int i = 0; i < col; i++)
+        {
+            for (int j = 0; j < row; j++)
+            {
+                Color tempColor = texture2D.GetPixel(i, j);
+
+                if (tempColor.CompareTwoColor(Color.white) || tempColor.a < alphaValue)
+                    continue;
+
+                if (index >= pieces.Count)
+                {
+                    Debug.LogError("index out of range!");
+                    return;
+                }
+                GameObject temp = pieces[index];
+                temp.GetComponent<XepHinhPixel>().AnimationAnim(isMainModel);
                 index++;
             }
         }
@@ -129,10 +162,7 @@ public class XepHinhSo : MonoBehaviour
 
     void Update()
     {
-        if (mainCamera.orthographicSize >= 0.7f)
-            GeneratePiecePixel(false);
-        else
-            GeneratePiecePixel(true);
+       
     }
 
     public void SetPieceArrayColor(int number , Color color)
@@ -167,6 +197,25 @@ public class XepHinhSo : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    public void PaintPieces()
+    {
+        foreach (var pixel in pieceDic[numberSelected])
+        {
+            pixel.UnlockPiece();
+        }
+    }
+
+    public void Hint()
+    {
+        var pieces = pieceDic[numberSelected];
+        if(pieces.Count > 0)
+        {
+            var pos = new Vector3(pieces[0].transform.position.x,mainCamera.transform.position.y, pieces[0].transform.position.z);
+            CameraController.Instance.MoveToPosition(pos);
+
+        }
     }
 
 }
