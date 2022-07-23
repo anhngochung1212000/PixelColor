@@ -5,17 +5,36 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+[System.Serializable]
+public class PixelArtTextureData
+{
+    public Texture2D textureModel;
+    public Texture2D textureModelGray;
+}
+
+[System.Serializable]
+public class PixelArtSpriteData
+{
+    public Sprite textureModel;
+    public Sprite textureModelGray;
+}
+
 public class XepHinhSo : MonoBehaviour
 {
     public static XepHinhSo Instance;
     public static Action<List<Color>> onLoadUIColorItem;
+    public static string id;
+    [System.Serializable]
+    public class GroupPixelArtDic : SerializableDictionary<string, PixelArtTextureData> { }
+    public GroupPixelArtDic paramDic = new GroupPixelArtDic();
 
-    [SerializeField] Texture2D textureModel;
-    [SerializeField] Texture2D textureModelGray;
+
+    Texture2D textureModel;
+    Texture2D textureModelGray;
     [SerializeField] float alphaValue = 0.1f;
     [SerializeField] GameObject obj;
-    [SerializeField] Dictionary<int, List<XepHinhPixel>> pieceDic = new Dictionary<int, List<XepHinhPixel>>();
-
+    public static Dictionary<int, List<XepHinhPixel>> pieceDic = new Dictionary<int, List<XepHinhPixel>>();
+    public static Action<int> onUnlockPiece;
     int col = 30;
     int row = 30;
     Vector2 textureSize = new Vector2(512, 512);
@@ -29,6 +48,7 @@ public class XepHinhSo : MonoBehaviour
 
     float scale = 0;
     float disX, disY;
+
     void Awake()
     {
         Instance = this;
@@ -37,6 +57,17 @@ public class XepHinhSo : MonoBehaviour
 
     void Start()
     {
+        LoadData();
+    }
+
+    public void LoadData()
+    {
+        if (string.IsNullOrEmpty(id))
+            id = paramDic.Keys.ToList()[0];
+
+        textureModel = paramDic[id].textureModel;
+        textureModelGray = paramDic[id].textureModelGray;
+
         textureSize.x = col = textureModel.width;
         textureSize.y = row = textureModel.height;
 
@@ -98,6 +129,7 @@ public class XepHinhSo : MonoBehaviour
         SetPieceArrayColor(numberSelected, Color.gray);
         onLoadUIColorItem?.Invoke(colors);
         isGenerate = true;
+
     }
 
     public void GenerateColorOfPiece(bool isMainModel)
@@ -207,15 +239,26 @@ public class XepHinhSo : MonoBehaviour
         }
     }
 
+    public void SaveData()
+    {
+        var userDatas = Newtonsoft.Json.JsonConvert.DeserializeObject<List<UserData>>(PlayerPrefs.GetString(UIMainMenu.Key));
+        var data = userDatas.FirstOrDefault(p => p.id == id);
+        data.isPaited = true;
+        PlayerPrefs.SetString(UIMainMenu.Key, Newtonsoft.Json.JsonConvert.SerializeObject(userDatas));
+    }
+
     public void Hint()
     {
         var pieces = pieceDic[numberSelected];
-        if(pieces.Count > 0)
-        {
-            var pos = new Vector3(pieces[0].transform.position.x,mainCamera.transform.position.y, pieces[0].transform.position.z);
-            CameraController.Instance.MoveToPosition(pos);
+        if (pieces.Count <= 0)
+            return;
 
-        }
+        var target = pieces.FirstOrDefault(p => !p.isUnlock);
+        if (target == null)
+            return;
+
+        var pos = new Vector3(target.transform.position.x, mainCamera.transform.position.y, target.transform.position.z);
+        CameraController.Instance.MoveToPosition(pos);
     }
 
 }

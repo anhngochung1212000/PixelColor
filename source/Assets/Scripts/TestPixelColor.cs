@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PixelColorController : MonoBehaviour
+public class TestPixelColor : MonoBehaviour
 {
     [SerializeField]SpriteRenderer spriteRenderer;
     [SerializeField] RawImage rawImage;

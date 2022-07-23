@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
+using System.Linq;
+
 public class UIPixelColor : MonoBehaviour
 {
     [SerializeField] GameObject prefabColorItem;
@@ -13,11 +16,13 @@ public class UIPixelColor : MonoBehaviour
     void Awake()
     {
         XepHinhSo.onLoadUIColorItem += OnLoadUIColorItem;
+        XepHinhSo.onUnlockPiece += OnUnlockPiece;
     }
 
     void OnDestroy()
     {
         XepHinhSo.onLoadUIColorItem -= OnLoadUIColorItem;
+        XepHinhSo.onUnlockPiece -= OnUnlockPiece;
     }
 
     void OnLoadUIColorItem(List<Color> colors)
@@ -57,6 +62,34 @@ public class UIPixelColor : MonoBehaviour
         CameraController.Instance.ZoomOutCamera();
     }
 
+    void OnUnlockPiece(int number)
+    {
+        var count = XepHinhSo.pieceDic[number].Count(p => p.isUnlock);
+        colorItemDic[number].SetCountNumber(count);
+        CheckAllColorPainted();
+    }
+
+    void CheckAllColorPainted()
+    {
+        bool isFinish = true;
+        foreach (var item in colorItemDic)
+        {
+            if (item.Value.isPainted)
+                continue;
+
+            isFinish = false;
+            break;
+        }
+
+        if(isFinish)
+        {
+            XepHinhSo.Instance.SaveData();
+            CameraController.Instance.BackToRootPoint();
+            gameObject.SetActive(false);
+        }
+
+    }
+
     public void OnPaintButtonClicked()
     {
         XepHinhSo.Instance.PaintPieces();
@@ -72,4 +105,8 @@ public class UIPixelColor : MonoBehaviour
         XepHinhSo.Instance.Hint();
     }
 
+    public void OnButtonBackMainMenuClicked()
+    {
+        SceneManager.LoadSceneAsync("MainMenu");
+    }
 }

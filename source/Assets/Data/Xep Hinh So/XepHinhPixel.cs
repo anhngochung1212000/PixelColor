@@ -58,6 +58,7 @@ public class XepHinhPixel : MonoBehaviour
             return;
         material.SetFloat("_Anim", 1);
         isUnlock = true;
+        XepHinhSo.onUnlockPiece?.Invoke(number);
     }
 
 }

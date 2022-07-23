@@ -9,10 +9,14 @@ public class UIColorItem : MonoBehaviour
     [SerializeField] TMP_Text textNumber;
     [SerializeField] RectTransform selected;
     [SerializeField] Button buttonClick;
-
+    [SerializeField] Image imageCount;
+    [SerializeField] Image imageCheck;
     [HideInInspector] public UIPixelColor parent;
-
+    [HideInInspector] public bool isPainted;
     int number;
+    int totalCount;
+
+
     void Awake()
     {
         buttonClick.onClick.AddListener(OnColorItemClicked);
@@ -27,12 +31,27 @@ public class UIColorItem : MonoBehaviour
     {
         this.number = number;
         textNumber.text = number.ToString();
+        totalCount = XepHinhSo.pieceDic[number].Count;
+    }
+
+    public void SetCountNumber(float count)
+    {
+        imageCount.fillAmount = count * 1.0f / totalCount;
+        if(imageCount.fillAmount == 1)
+        {
+            textNumber.gameObject.SetActive(false);
+            selected.gameObject.SetActive(false);
+            imageCount.gameObject.SetActive(false);
+            imageCheck.gameObject.SetActive(true);
+            isPainted = true;
+        }
     }
 
     public void SetBackGroundColor(Color color)
     {
         background.color = color;
-        if(color.r < 0.5f && color.g < 0.5f && color.b < 0.5f)
+        imageCount.color = color;
+        if (color.r < 0.5f && color.g < 0.5f && color.b < 0.5f)
         {
             textNumber.color = Color.white;
         }
