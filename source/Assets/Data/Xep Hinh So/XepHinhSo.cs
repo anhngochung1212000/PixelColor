@@ -10,6 +10,7 @@ public class PixelArtTextureData
 {
     public Texture2D textureModel;
     public Texture2D textureModelGray;
+    public GameObject prefab3D;
 }
 
 [System.Serializable]
@@ -17,12 +18,16 @@ public class PixelArtSpriteData
 {
     public Sprite textureModel;
     public Sprite textureModelGray;
+    public bool isModel3D;
 }
 
 public class XepHinhSo : MonoBehaviour
 {
     public static XepHinhSo Instance;
     public static Action<List<Color>> onLoadUIColorItem;
+    public static bool hasModel3D;
+
+
     public static string id;
     [System.Serializable]
     public class GroupPixelArtDic : SerializableDictionary<string, PixelArtTextureData> { }
@@ -33,6 +38,10 @@ public class XepHinhSo : MonoBehaviour
     Texture2D textureModelGray;
     [SerializeField] float alphaValue = 0.1f;
     [SerializeField] GameObject obj;
+    [SerializeField] Camera camera2D;
+    [SerializeField] Camera camera3D;
+    [SerializeField] Transform contentModel3D;
+
     public static Dictionary<int, List<XepHinhPixel>> pieceDic = new Dictionary<int, List<XepHinhPixel>>();
     public static Action<int> onUnlockPiece;
     int col = 30;
@@ -52,7 +61,18 @@ public class XepHinhSo : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        mainCamera = Camera.main;
+    }
+
+    void OnEnable()
+    {
+        camera2D.gameObject.SetActive(false);
+        camera3D.gameObject.SetActive(false);
+    }
+
+    void OnDestroy()
+    {
+        hasModel3D = false;
+        pieceDic.Clear();
     }
 
     void Start()
@@ -62,70 +82,112 @@ public class XepHinhSo : MonoBehaviour
 
     public void LoadData()
     {
-        if (string.IsNullOrEmpty(id))
-            id = paramDic.Keys.ToList()[0];
-
-        textureModel = paramDic[id].textureModel;
-        textureModelGray = paramDic[id].textureModelGray;
-
-        textureSize.x = col = textureModel.width;
-        textureSize.y = row = textureModel.height;
-
-        scale = textureSize.x / textureSize.y;
-        disX = scale / col;
-        disY = 1f / row;
-
-        for (int i = 0; i < col; i++)
+        if(!hasModel3D)
         {
-            for (int j = 0; j < row; j++)
+            if (string.IsNullOrEmpty(id))
+                id = paramDic.Keys.ToList()[0];
+
+            camera2D.gameObject.SetActive(true);
+            mainCamera = camera2D;
+            textureModel = paramDic[id].textureModel;
+            textureModelGray = paramDic[id].textureModelGray;
+
+            textureSize.x = col = textureModel.width;
+            textureSize.y = row = textureModel.height;
+
+            scale = textureSize.x / textureSize.y;
+            disX = scale / col;
+            disY = 1f / row;
+
+            for (int i = 0; i < col; i++)
             {
-                Color tempColor = textureModel.GetPixel(i, j);
-
-                if (tempColor.CompareTwoColor(Color.white) || tempColor.a < alphaValue)
-                    continue;
-
-                GameObject temp = Instantiate(obj);
-                var piecePixel = temp.GetComponent<XepHinhPixel>();
-
-                tempMat = temp.GetComponent<Renderer>().material;
-
-                tempMat.SetColor("_BaseColor", tempColor);
-
-
-
-                if (colors.Count == 0 || !CheckColorAvaible(tempColor))
+                for (int j = 0; j < row; j++)
                 {
-                    //Debug.LogError(tempColor);
-                    colors.Add(tempColor);
+                    Color tempColor = textureModel.GetPixel(i, j);
+
+                    if (tempColor.CompareTwoColor(Color.white) || tempColor.a < alphaValue)
+                        continue;
+
+                    GameObject temp = Instantiate(obj);
+                    var piecePixel = temp.GetComponent<XepHinhPixel>();
+
+                    tempMat = temp.GetComponent<Renderer>().material;
+
+                    tempMat.SetColor("_BaseColor", tempColor);
+
+
+
+                    if (colors.Count == 0 || !CheckColorAvaible(tempColor))
+                    {
+                        //Debug.LogError(tempColor);
+                        colors.Add(tempColor);
+                    }
+
+                    Vector3 pos = new Vector3(disX * i, 0, disY * j);
+
+                    temp.transform.position = pos;
+                    temp.transform.localScale = Vector3.one * disY;
+
+                    var number = colors.FindIndex(p => p.CompareTwoColor(tempColor));
+                    piecePixel.number = number;
+
+                    List<XepHinhPixel> xepHinhPixels;
+                    if (pieceDic.ContainsKey(number))
+                        xepHinhPixels = pieceDic[number];
+                    else
+                    {
+                        xepHinhPixels = new List<XepHinhPixel>();
+                        pieceDic[number] = xepHinhPixels;
+                    }
+                    xepHinhPixels.Add(piecePixel);
+
+
+                    tempMat.SetFloat("_CurNum", number);
+                    tempMat.SetFloat("_Anim", 1);
+                    temp.GetComponent<Renderer>().material = tempMat;
+                    pieces.Add(temp);
+
                 }
+            }
+        }
+        else
+        {
+            camera3D.gameObject.SetActive(true);
+            mainCamera = camera3D;
+            var object3D = Instantiate(paramDic[id].prefab3D, contentModel3D);
+            var pixelArray = GetComponentsInChildren<XepHinhPixel>();
+            for (int i = 0; i < pixelArray.Length; i++)
+            {
+                var temp = pixelArray[i];
+                var tempMat = temp.GetComponent<Renderer>().material;
+                var color = tempMat.GetColor("_BaseColor");
+                var index = colors.FindIndex(p => p.CompareTwoColor(color));
 
-                Vector3 pos = new Vector3(disX * i, 0, disY * j);
-
-                temp.transform.position = pos;
-                temp.transform.localScale = Vector3.one * disY;
-
-                var number = colors.FindIndex(p => p.CompareTwoColor(tempColor));
-                piecePixel.number = number;
-
-                List<XepHinhPixel> xepHinhPixels;
-                if (pieceDic.ContainsKey(number))
-                    xepHinhPixels = pieceDic[number];
+                if (index == -1)
+                {
+                    colors.Add(color);
+                    var list = new List<XepHinhPixel>();
+                    list.Add(temp);
+                    temp.number = index == -1 ? pieceDic.Count : index;
+                    tempMat.SetFloat("_CurNum", index == -1 ? pieceDic.Count : index);
+                    pieceDic.Add(pieceDic.Count, list);
+                }
                 else
                 {
-                    xepHinhPixels = new List<XepHinhPixel>();
-                    pieceDic[number] = xepHinhPixels;
+                    var list = pieceDic[index];
+                    list.Add(temp);
+                    temp.number = index;
+                    tempMat.SetFloat("_CurNum", index);
                 }
-                xepHinhPixels.Add(piecePixel);
 
-
-                tempMat.SetFloat("_CurNum", number);
-                tempMat.SetFloat("_Anim", 1);
-                temp.GetComponent<Renderer>().material = tempMat;
-                pieces.Add(temp);
-
+                tempMat.SetFloat("_Anim", 0);
             }
         }
 
+
+
+
+        
         SetPieceArrayColor(numberSelected, Color.gray);
         onLoadUIColorItem?.Invoke(colors);
         isGenerate = true;
@@ -258,7 +320,8 @@ public class XepHinhSo : MonoBehaviour
             return;
 
         var pos = new Vector3(target.transform.position.x, mainCamera.transform.position.y, target.transform.position.z);
-        CameraController.Instance.MoveToPosition(pos);
+        if(CameraController.Instance != null)
+            CameraController.Instance.MoveToPosition(pos);
     }
 
 }

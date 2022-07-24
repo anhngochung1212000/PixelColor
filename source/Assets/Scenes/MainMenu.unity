@@ -880,19 +880,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f4c32d8ddb52d4f8a38b39dbbfdf1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: UserData
   paramDic:
     m_keys:
     - 14
     - 87
     - 93
+    - 1
     m_values:
     - textureModel: {fileID: 21300000, guid: 321673a99fd52a04191a7209362675b7, type: 3}
       textureModelGray: {fileID: 21300000, guid: 6a1031f80511d0d4096cf54ff3b972fd, type: 3}
+      isModel3D: 0
     - textureModel: {fileID: 21300000, guid: 6f7ce6dd797976e41bf0f301068dd4de, type: 3}
       textureModelGray: {fileID: 21300000, guid: dbe197bacecc85341b36bcca8a9520f6, type: 3}
+      isModel3D: 0
     - textureModel: {fileID: 21300000, guid: 207f11858681f904582d6f9b2f3bea21, type: 3}
       textureModelGray: {fileID: 21300000, guid: 4b94039c6cf22fa4f894ca799d00500c, type: 3}
+      isModel3D: 0
+    - textureModel: {fileID: 21300000, guid: c45e2398fe7a6ae42b3110f122f72ebb, type: 3}
+      textureModelGray: {fileID: 21300000, guid: c7e1d0ecc0e9b0448975f3d3c226d572, type: 3}
+      isModel3D: 1
   prefabPixelArtItem: {fileID: 5542711704777502709, guid: 686878f9e9236a341a4f19a91e544921, type: 3}
   content: {fileID: 183229426}
 --- !u!1001 &5542711705294035430

@@ -48,18 +48,29 @@ public class UIPixelColor : MonoBehaviour
 
         colorItemSelected = colorItemDic[0];
         colorItemSelected.Selected(true);
-        CameraController.Instance.hasMainModel = true;
-        CameraController.Instance.OnZoomComplete();
+
+        if(CameraController.Instance != null)
+        {
+            CameraController.Instance.hasMainModel = true;
+            CameraController.Instance.OnZoomComplete();
+        }
+        
     }
 
     public void ZoomInCamera()
     {
-        CameraController.Instance.ZoomInCamera();
+        if (CameraController.Instance != null)
+            CameraController.Instance.ZoomInCamera();
+        if (CameraController3D.Instance != null)
+            CameraController3D.Instance.ZoomInCamera();
     }
 
     public void ZoomOutCamera()
     {
-        CameraController.Instance.ZoomOutCamera();
+        if (CameraController.Instance != null)
+            CameraController.Instance.ZoomOutCamera();
+        if (CameraController3D.Instance != null)
+            CameraController3D.Instance.ZoomOutCamera();
     }
 
     void OnUnlockPiece(int number)
@@ -84,7 +95,10 @@ public class UIPixelColor : MonoBehaviour
         if(isFinish)
         {
             XepHinhSo.Instance.SaveData();
-            CameraController.Instance.BackToRootPoint();
+            if (CameraController.Instance != null)
+                CameraController.Instance.BackToRootPoint();
+            if (CameraController3D.Instance != null)
+                CameraController3D.Instance.BackToRootPoint();
             gameObject.SetActive(false);
         }
 
@@ -97,7 +111,10 @@ public class UIPixelColor : MonoBehaviour
 
     public void OnBackButtonClicked()
     {
-        CameraController.Instance.BackToRootPoint();
+        if (CameraController.Instance != null)
+            CameraController.Instance.BackToRootPoint();
+        if (CameraController3D.Instance != null)
+            CameraController3D.Instance.BackToRootPoint();
     }
 
     public void OnHintButtonClicked()

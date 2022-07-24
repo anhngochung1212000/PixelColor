@@ -51,6 +51,7 @@ public class UIMainMenu : MonoBehaviour
     public void OnLoadPixelColorScene(string id)
     {
         XepHinhSo.id = id;
+        XepHinhSo.hasModel3D = paramDic[id].isModel3D;
         SceneManager.LoadSceneAsync("XepHinhSo");
     }
 }
