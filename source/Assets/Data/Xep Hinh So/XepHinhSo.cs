@@ -293,11 +293,11 @@ public class XepHinhSo : MonoBehaviour
         return false;
     }
 
-    public void PaintPieces()
+    public void PaintPieces(Color color)
     {
         foreach (var pixel in pieceDic[numberSelected])
         {
-            pixel.UnlockPiece();
+            pixel.UnlockPiece(color);
         }
     }
 

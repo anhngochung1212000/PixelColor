@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using DG.Tweening;
 public class XepHinhPixel : MonoBehaviour
 {
     public bool isUnlock = false;
@@ -9,6 +9,7 @@ public class XepHinhPixel : MonoBehaviour
     float duration = 0.25f;
     Material material;
     bool isMainModel;
+    
     [HideInInspector]public int number;
     void Awake()
     {
@@ -19,20 +20,6 @@ public class XepHinhPixel : MonoBehaviour
     void OnEnable()
     {
         isUnlock = false;
-    }
-
-    void Update()
-    {
-
-        if (count > 0 && !isUnlock)
-        {
-            count -= Time.deltaTime;
-
-            if(isMainModel)
-                material.SetFloat("_Anim", Mathf.Clamp(count / duration, 0f, 1f));
-            else
-                material.SetFloat("_Anim", Mathf.Clamp(1f - (count / duration), 0f, 1f));
-        }
     }
 
     public void SetPieceNumberBGColor(Color color)
@@ -47,16 +34,27 @@ public class XepHinhPixel : MonoBehaviour
         if (!isMainModel && material.GetFloat("_Anim") == 1)
             return;
 
+        if (isUnlock)
+            return;
+
         this.isMainModel = isMainModel;
-        count = duration;
-        
+
+        if (isMainModel)
+            material.DOFloat(0, "_Anim",0.5f);
+        else
+            material.DOFloat(1, "_Anim",0.5f);
     }
 
-    public void UnlockPiece()
+    public void UnlockPiece(Color color)
     {
         if (number != XepHinhSo.Instance.numberSelected)
             return;
+
+        if(material.GetFloat("_Anim") == 1)
+            material.SetColor("_BaseColor", color);
+
         material.SetFloat("_Anim", 1);
+       
         isUnlock = true;
         XepHinhSo.onUnlockPiece?.Invoke(number);
     }

@@ -28,7 +28,7 @@ public class XepHinhControl : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 //Select stage    
-                hit.transform.gameObject.GetComponent<XepHinhPixel>().UnlockPiece();
+                hit.transform.gameObject.GetComponent<XepHinhPixel>().UnlockPiece(UIPixelColor.Instance.colorItemSelected.color);
             }
         }
         if (Input.GetMouseButtonUp(0))

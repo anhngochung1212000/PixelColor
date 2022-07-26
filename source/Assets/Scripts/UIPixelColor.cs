@@ -8,13 +8,16 @@ using System.Linq;
 
 public class UIPixelColor : MonoBehaviour
 {
+    public static UIPixelColor Instance;
     [SerializeField] GameObject prefabColorItem;
+    [SerializeField] ParticleSystem partical;
     [SerializeField]
     RectTransform content;
     Dictionary<int, UIColorItem> colorItemDic = new Dictionary<int, UIColorItem>();
     [HideInInspector] public UIColorItem colorItemSelected;
     void Awake()
     {
+        Instance = this;
         XepHinhSo.onLoadUIColorItem += OnLoadUIColorItem;
         XepHinhSo.onUnlockPiece += OnUnlockPiece;
     }
@@ -99,6 +102,8 @@ public class UIPixelColor : MonoBehaviour
                 CameraController.Instance.BackToRootPoint();
             if (CameraController3D.Instance != null)
                 CameraController3D.Instance.BackToRootPoint();
+           
+            partical.Play();
             gameObject.SetActive(false);
         }
 
@@ -106,7 +111,7 @@ public class UIPixelColor : MonoBehaviour
 
     public void OnPaintButtonClicked()
     {
-        XepHinhSo.Instance.PaintPieces();
+        XepHinhSo.Instance.PaintPieces(colorItemSelected.color);
     }
 
     public void OnBackButtonClicked()

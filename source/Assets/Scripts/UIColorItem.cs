@@ -13,6 +13,7 @@ public class UIColorItem : MonoBehaviour
     [SerializeField] Image imageCheck;
     [HideInInspector] public UIPixelColor parent;
     [HideInInspector] public bool isPainted;
+    [HideInInspector] public Color color;
     int number;
     int totalCount;
 
@@ -49,6 +50,7 @@ public class UIColorItem : MonoBehaviour
 
     public void SetBackGroundColor(Color color)
     {
+        this.color = color;
         background.color = color;
         imageCount.color = color;
         if (color.r < 0.5f && color.g < 0.5f && color.b < 0.5f)
