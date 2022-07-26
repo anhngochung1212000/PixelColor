@@ -31,22 +31,23 @@ public class XepHinhControl : MonoBehaviour
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+
+            if (!Physics.Raycast(ray, out hit))
+                return;
+
+            if (!UIPixelColor.Instance.hasBomb)
+                hit.transform.gameObject.GetComponent<XepHinhPixel>().UnlockPiece();
+            else
             {
-                if (!UIPixelColor.Instance.hasBomb)
-                    hit.transform.gameObject.GetComponent<XepHinhPixel>().UnlockPiece();
-                else
+                var colliders = Physics.OverlapSphere(hit.transform.gameObject.transform.position, bombRadius);
+                foreach (var collider in colliders)
                 {
-                   var colliders = Physics.OverlapSphere(hit.transform.gameObject.transform.position, bombRadius);
-                    foreach (var collider in colliders)
-                    {
-                        var pixel = collider.gameObject.GetComponent<XepHinhPixel>();
-                        if (pixel == null)
-                            continue;
-                        pixel.UnlockPiece();
-                    }
-                    UIPixelColor.Instance.UnSelectedBombUI();
+                    var pixel = collider.gameObject.GetComponent<XepHinhPixel>();
+                    if (pixel == null)
+                        continue;
+                    pixel.UnlockPiece();
                 }
+                UIPixelColor.Instance.UnSelectedBombUI();
             }
         }
         if (Input.GetMouseButtonUp(0))

@@ -45,6 +45,7 @@ public class UIColorItem : MonoBehaviour
             imageCount.gameObject.SetActive(false);
             imageCheck.gameObject.SetActive(true);
             isPainted = true;
+            parent.NextColorSelected();
         }
     }
 
@@ -64,7 +65,7 @@ public class UIColorItem : MonoBehaviour
         selected.gameObject.SetActive(isSelected);
     }
 
-    void OnColorItemClicked()
+    public void OnColorItemClicked()
     {
         parent.colorItemSelected.Selected(false);
         Selected(true);

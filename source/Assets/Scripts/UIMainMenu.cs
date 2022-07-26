@@ -3,16 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class UserData
+public class PixelNumberData
 {
     public string id;
     public bool isPaited;
 }
 
+public class PixelNumberGame
+{
+    public int hintCount = 3;
+    public int bombCount = 3;
+    public int paintCount = 1;
+    public List<PixelNumberData> pixelNumberDatas = new List<PixelNumberData>();
+}
+
 public class UIMainMenu : MonoBehaviour
 {
     public static string Key = "UserData";
-    List<UserData> userDatas = new List<UserData>();
+    PixelNumberGame userDatas = new PixelNumberGame();
     [System.Serializable]
     public class MainMenuPixelArtDic : SerializableDictionary<string, PixelArtSpriteData> { }
     public MainMenuPixelArtDic paramDic = new MainMenuPixelArtDic();
@@ -25,19 +33,19 @@ public class UIMainMenu : MonoBehaviour
     {
         if (PlayerPrefs.HasKey(Key))
         {
-            userDatas = Newtonsoft.Json.JsonConvert.DeserializeObject<List<UserData>>(PlayerPrefs.GetString(Key));
+            userDatas = Newtonsoft.Json.JsonConvert.DeserializeObject<PixelNumberGame>(PlayerPrefs.GetString(Key));
         }
         else
         {
             foreach (var item in paramDic)
             {
-                var userData = new UserData() { id = item.Key };
-                userDatas.Add(userData);
+                var userData = new PixelNumberData() { id = item.Key };
+                userDatas.pixelNumberDatas.Add(userData);
             }
             PlayerPrefs.SetString(Key, Newtonsoft.Json.JsonConvert.SerializeObject(userDatas));
         }
 
-        foreach (var item in userDatas)
+        foreach (var item in userDatas.pixelNumberDatas)
         {
             var pixelOject = Instantiate(prefabPixelArtItem, content);
             var pixelArtItem = pixelOject.GetComponent<UIPixelArtItem>();

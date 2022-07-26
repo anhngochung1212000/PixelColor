@@ -303,8 +303,8 @@ public class XepHinhSo : MonoBehaviour
 
     public void SaveData()
     {
-        var userDatas = Newtonsoft.Json.JsonConvert.DeserializeObject<List<UserData>>(PlayerPrefs.GetString(UIMainMenu.Key));
-        var data = userDatas.FirstOrDefault(p => p.id == id);
+        var userDatas = Newtonsoft.Json.JsonConvert.DeserializeObject<PixelNumberGame>(PlayerPrefs.GetString(UIMainMenu.Key));
+        var data = userDatas.pixelNumberDatas.FirstOrDefault(p => p.id == id);
         data.isPaited = true;
         PlayerPrefs.SetString(UIMainMenu.Key, Newtonsoft.Json.JsonConvert.SerializeObject(userDatas));
     }

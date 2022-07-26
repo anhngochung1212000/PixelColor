@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 using System.Linq;
-
+using DG.Tweening;
 public class UIPixelColor : MonoBehaviour
 {
     public static UIPixelColor Instance;
@@ -13,8 +13,12 @@ public class UIPixelColor : MonoBehaviour
     [SerializeField] GameObject prefabColorItem;
     [SerializeField] ParticleSystem partical;
     [SerializeField] RectTransform content;
+    [SerializeField] ScrollRect scrollRect;
     [SerializeField] Sprite[] bombSprites;
     [SerializeField] Image imageBomb;
+    [SerializeField] TMPro.TMP_Text textBombCount;
+    [SerializeField] TMPro.TMP_Text textHintCount;
+    [SerializeField] TMPro.TMP_Text textPaintCount;
     Dictionary<int, UIColorItem> colorItemDic = new Dictionary<int, UIColorItem>();
     [HideInInspector] public UIColorItem colorItemSelected;
     [HideInInspector] public bool hasBomb;
@@ -60,7 +64,11 @@ public class UIPixelColor : MonoBehaviour
             CameraController.Instance.hasMainModel = true;
             CameraController.Instance.OnZoomComplete();
         }
-        
+
+        var userDatas = Newtonsoft.Json.JsonConvert.DeserializeObject<PixelNumberGame>(PlayerPrefs.GetString(UIMainMenu.Key));
+        textBombCount.text = userDatas.bombCount.ToString();
+        textHintCount.text = userDatas.hintCount.ToString();
+        textPaintCount.text = userDatas.paintCount.ToString();
     }
 
     public void ZoomInCamera()
@@ -84,6 +92,57 @@ public class UIPixelColor : MonoBehaviour
         var count = XepHinhSo.pieceDic[number].Count(p => p.isUnlock);
         colorItemDic[number].SetCountNumber(count);
         CheckAllColorPainted();
+    }
+
+    public void NextColorSelected()
+    {
+        var index = colorItemDic.Values.ToList().FindIndex(p => p == colorItemSelected);
+        UIColorItem item = null;
+
+        int space = 1;
+        bool flag = false;
+
+        while(index != -1 && !flag)
+        {
+           
+            if ((index + space) >= colorItemDic.Values.Count)
+                break;
+
+            item = colorItemDic.Values.ElementAt(index + space);
+            if(!item.isPainted)
+            {
+                flag = true;
+                item.OnColorItemClicked();
+            }
+            space++;
+        }
+
+        if(index == -1 || !flag)
+        {
+            item = colorItemDic.Values.FirstOrDefault(p => !p.isPainted);
+            if (item != null)
+            {
+                item.OnColorItemClicked();
+            }
+        }
+       
+
+        if (item != null)
+            SnapTo(item.transform);
+    }
+
+    public void SnapTo(Transform target)
+    {
+        Canvas.ForceUpdateCanvases();
+        var position = (Vector2)scrollRect.transform.InverseTransformPoint(content.position)
+                - (Vector2)scrollRect.transform.InverseTransformPoint(target.position+new Vector3(-150,0,0));
+        //position.x += 600f;
+
+        if (Mathf.Abs(position.x) < content.sizeDelta.x)
+            content.DOAnchorPos(new Vector2(position.x, content.anchoredPosition.y),0.5f);
+        else
+            content.DOAnchorPos(new Vector2(-content.sizeDelta.x, content.anchoredPosition.y), 0.5f);
+
     }
 
     void CheckAllColorPainted()
