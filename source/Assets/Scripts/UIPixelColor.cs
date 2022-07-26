@@ -9,12 +9,15 @@ using System.Linq;
 public class UIPixelColor : MonoBehaviour
 {
     public static UIPixelColor Instance;
+   
     [SerializeField] GameObject prefabColorItem;
     [SerializeField] ParticleSystem partical;
-    [SerializeField]
-    RectTransform content;
+    [SerializeField] RectTransform content;
+    [SerializeField] Sprite[] bombSprites;
+    [SerializeField] Image imageBomb;
     Dictionary<int, UIColorItem> colorItemDic = new Dictionary<int, UIColorItem>();
     [HideInInspector] public UIColorItem colorItemSelected;
+    [HideInInspector] public bool hasBomb;
     void Awake()
     {
         Instance = this;
@@ -111,7 +114,8 @@ public class UIPixelColor : MonoBehaviour
 
     public void OnPaintButtonClicked()
     {
-        XepHinhSo.Instance.PaintPieces(colorItemSelected.color);
+        UnSelectedBombUI();
+        XepHinhSo.Instance.PaintPieces();
     }
 
     public void OnBackButtonClicked()
@@ -131,4 +135,22 @@ public class UIPixelColor : MonoBehaviour
     {
         SceneManager.LoadSceneAsync("MainMenu");
     }
+
+    public void OnButtonBombOnClick()
+    {
+        SelectedBombUI();
+    }
+
+    public void UnSelectedBombUI()
+    {
+        imageBomb.sprite = bombSprites[0];
+        hasBomb = false;
+    }
+
+    void SelectedBombUI()
+    {
+        hasBomb = true;
+        imageBomb.sprite = bombSprites[1];
+    }
+
 }

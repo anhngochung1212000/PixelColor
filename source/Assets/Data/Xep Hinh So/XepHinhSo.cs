@@ -112,7 +112,7 @@ public class XepHinhSo : MonoBehaviour
                     var piecePixel = temp.GetComponent<XepHinhPixel>();
 
                     tempMat = temp.GetComponent<Renderer>().material;
-
+                    piecePixel.color = tempColor;
                     tempMat.SetColor("_BaseColor", tempColor);
 
 
@@ -179,7 +179,7 @@ public class XepHinhSo : MonoBehaviour
                     temp.number = index;
                     tempMat.SetFloat("_CurNum", index);
                 }
-
+                temp.color = color;
                 tempMat.SetFloat("_Anim", 0);
             }
         }
@@ -293,11 +293,11 @@ public class XepHinhSo : MonoBehaviour
         return false;
     }
 
-    public void PaintPieces(Color color)
+    public void PaintPieces()
     {
         foreach (var pixel in pieceDic[numberSelected])
         {
-            pixel.UnlockPiece(color);
+            pixel.UnlockPiece();
         }
     }
 

@@ -11,6 +11,7 @@ public class XepHinhPixel : MonoBehaviour
     bool isMainModel;
     
     [HideInInspector]public int number;
+    [HideInInspector]public Color color;
     void Awake()
     {
         material = GetComponent<Renderer>().material;
@@ -45,16 +46,26 @@ public class XepHinhPixel : MonoBehaviour
             material.DOFloat(1, "_Anim",0.5f);
     }
 
-    public void UnlockPiece(Color color)
+    public void UnlockPiece()
     {
         if (number != XepHinhSo.Instance.numberSelected)
+        {
+            if(UIPixelColor.Instance.hasBomb)
+            {
+                if (material.GetFloat("_Anim") == 1)
+                    material.SetColor("_BaseColor", color);
+                material.SetFloat("_Anim", 1);
+                isUnlock = true;
+                XepHinhSo.onUnlockPiece?.Invoke(number);
+            }
             return;
+        }
+            
 
         if(material.GetFloat("_Anim") == 1)
             material.SetColor("_BaseColor", color);
 
         material.SetFloat("_Anim", 1);
-       
         isUnlock = true;
         XepHinhSo.onUnlockPiece?.Invoke(number);
     }
