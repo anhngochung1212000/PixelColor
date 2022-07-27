@@ -106,6 +106,7 @@ public class CameraController : MonoBehaviour
         if (mainCamera.orthographicSize + delta >= max)
         {
             mainCamera.DOOrthoSize(max, 0.25f).OnComplete(() => OnZoomComplete()); ;
+            UIMainMenu.Instance.gameObject.SetActive(true);
             return;
         }
 
@@ -164,6 +165,7 @@ public class CameraController : MonoBehaviour
     {
         transform.DOMove(rootPoint, 0.5f);
         mainCamera.DOOrthoSize(max, 0.5f).OnComplete(() => OnZoomComplete()); ;
+        UIMainMenu.Instance.gameObject.SetActive(true);
     }
 
     public void MoveToPosition(Vector3 pos)

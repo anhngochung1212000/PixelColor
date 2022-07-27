@@ -56,6 +56,7 @@ public class CameraController3D : MonoBehaviour
         if (mainCamera.fieldOfView + delta >= max)
         {
             mainCamera.DOFieldOfView(max, 0.25f)/*.OnComplete(() => OnZoomComplete());*/ ;
+            UIMainMenu.Instance.gameObject.SetActive(true);
             return;
         }
 
@@ -76,5 +77,6 @@ public class CameraController3D : MonoBehaviour
     public void BackToRootPoint()
     {
         mainCamera.DOFieldOfView(max, 0.5f)/*.OnComplete(() => OnZoomComplete()); */;
+        UIMainMenu.Instance.gameObject.SetActive(true);
     }
 }

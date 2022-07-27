@@ -6,10 +6,12 @@ using DG.Tweening;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using DG.Tweening;
+using UIAnimatorCore;
+
 public class UIPixelColor : MonoBehaviour
 {
     public static UIPixelColor Instance;
-   
+    [SerializeField] UIAnimator uIAnimator;
     [SerializeField] GameObject prefabColorItem;
     [SerializeField] ParticleSystem partical;
     [SerializeField] RectTransform content;
@@ -37,20 +39,20 @@ public class UIPixelColor : MonoBehaviour
 
     void OnLoadUIColorItem(List<Color> colors)
     {
+        content.anchoredPosition = new Vector2(0, content.anchoredPosition.y);
+        partical.Stop();
+        uIAnimator.PlayAnimation(AnimSetupType.Intro);
+        foreach (var item in colorItemDic)
+        {
+            Destroy(item.Value.gameObject);
+        }
+        colorItemDic.Clear();
         for (int i = 0; i < colors.Count; i++)
         {
-            UIColorItem item;
-            if(colorItemDic.ContainsKey(i))
-            {
-                item = colorItemDic[i];
-            }
-            else
-            {
-                var gameObject = Instantiate(prefabColorItem, content);
-                item = gameObject.GetComponent<UIColorItem>();
-                item.parent = this;
-                colorItemDic.Add(i, item);
-            }
+            var gameObject = Instantiate(prefabColorItem, content);
+            UIColorItem item = gameObject.GetComponent<UIColorItem>();
+            item.parent = this;
+            colorItemDic.Add(i, item);
 
             item.SetBackGroundColor(colors[i]);
             item.SetNumberText(i);
@@ -59,7 +61,7 @@ public class UIPixelColor : MonoBehaviour
         colorItemSelected = colorItemDic[0];
         colorItemSelected.Selected(true);
 
-        if(CameraController.Instance != null)
+        if(CameraController.Instance != null && CameraController.Instance.gameObject.activeSelf)
         {
             CameraController.Instance.hasMainModel = true;
             CameraController.Instance.OnZoomComplete();
@@ -69,21 +71,24 @@ public class UIPixelColor : MonoBehaviour
         textBombCount.text = userDatas.bombCount.ToString();
         textHintCount.text = userDatas.hintCount.ToString();
         textPaintCount.text = userDatas.paintCount.ToString();
+
     }
 
     public void ZoomInCamera()
     {
-        if (CameraController.Instance != null)
+        if (CameraController.Instance != null && CameraController.Instance.gameObject.activeSelf)
             CameraController.Instance.ZoomInCamera();
-        if (CameraController3D.Instance != null)
+        if (CameraController3D.Instance != null && CameraController3D.Instance.gameObject.activeSelf)
             CameraController3D.Instance.ZoomInCamera();
+
+        UIMainMenu.Instance.gameObject.SetActive(false);
     }
 
     public void ZoomOutCamera()
     {
-        if (CameraController.Instance != null)
+        if (CameraController.Instance != null && CameraController.Instance.gameObject.activeSelf)
             CameraController.Instance.ZoomOutCamera();
-        if (CameraController3D.Instance != null)
+        if (CameraController3D.Instance != null && CameraController3D.Instance.gameObject.activeSelf)
             CameraController3D.Instance.ZoomOutCamera();
     }
 
@@ -160,13 +165,14 @@ public class UIPixelColor : MonoBehaviour
         if(isFinish)
         {
             XepHinhSo.Instance.SaveData();
-            if (CameraController.Instance != null)
+            if (CameraController.Instance != null && CameraController.Instance.gameObject.activeSelf)
                 CameraController.Instance.BackToRootPoint();
-            if (CameraController3D.Instance != null)
+            if (CameraController3D.Instance != null && CameraController3D.Instance.gameObject.activeSelf)
                 CameraController3D.Instance.BackToRootPoint();
            
             partical.Play();
-            gameObject.SetActive(false);
+            UIMainMenu.Instance.LoadData();
+            uIAnimator.PlayAnimation(AnimSetupType.Outro);
         }
 
     }
@@ -179,9 +185,9 @@ public class UIPixelColor : MonoBehaviour
 
     public void OnBackButtonClicked()
     {
-        if (CameraController.Instance != null)
+        if (CameraController.Instance != null && CameraController.Instance.gameObject.activeSelf)
             CameraController.Instance.BackToRootPoint();
-        if (CameraController3D.Instance != null)
+        if (CameraController3D.Instance != null && CameraController3D.Instance.gameObject.activeSelf)
             CameraController3D.Instance.BackToRootPoint();
     }
 

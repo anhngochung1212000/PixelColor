@@ -9,7 +9,9 @@ public class XepHinhControl : MonoBehaviour
     bool isMouseDown;
     public bool isLongClick;
 
-    public float bombRadius=0.05f;
+    float bombRadius=.1f;
+    RaycastHit hit;
+    Vector3 hit_point;
     void Awake()
     {
         Instance = this;
@@ -25,12 +27,23 @@ public class XepHinhControl : MonoBehaviour
         {
             timer = 0;
             isMouseDown = true;
+            hit_point = Input.mousePosition;
         }
+        if (Input.GetMouseButtonUp(0) || Vector3.Distance(hit_point, Input.mousePosition) > 30)
+        {
+            isMouseDown = false;
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            isLongClick = false;
+        }
+
         isLongClick = IsLongClick();
         if (isLongClick || isMouseDown)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+           
 
             if (!Physics.Raycast(ray, out hit))
                 return;
@@ -39,10 +52,11 @@ public class XepHinhControl : MonoBehaviour
                 hit.transform.gameObject.GetComponent<XepHinhPixel>().UnlockPiece();
             else
             {
-                var colliders = Physics.OverlapSphere(hit.transform.gameObject.transform.position, bombRadius);
-                foreach (var collider in colliders)
+                bombRadius = XepHinhSo.hasModel3D ? 0.15f : 0.03f;
+                var raycastHits = Physics.SphereCastAll(hit.transform.gameObject.transform.position, bombRadius, hit.transform.gameObject.transform.forward,0.1f);
+                foreach (var raycastHit in raycastHits)
                 {
-                    var pixel = collider.gameObject.GetComponent<XepHinhPixel>();
+                    var pixel = raycastHit.collider.gameObject.GetComponent<XepHinhPixel>();
                     if (pixel == null)
                         continue;
                     pixel.UnlockPiece();
@@ -50,17 +64,14 @@ public class XepHinhControl : MonoBehaviour
                 UIPixelColor.Instance.UnSelectedBombUI();
             }
         }
-        if (Input.GetMouseButtonUp(0))
-        {
-            isMouseDown = false;
-        }
+       
     }
 
     float timer;
     bool IsLongClick()
     {
-       
-        if(isMouseDown && IsUnLockPiece())
+        
+        if(isLongClick || ( isMouseDown && IsUnLockPiece() && Vector3.Distance(hit_point,Input.mousePosition) < 30))
         {
             timer += Time.deltaTime;
             if (timer > 0.3f)

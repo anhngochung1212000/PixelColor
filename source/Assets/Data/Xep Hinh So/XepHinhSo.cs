@@ -51,7 +51,6 @@ public class XepHinhSo : MonoBehaviour
     string colorDefaultStr = "#A1A1A1";
     Material tempMat;
     [HideInInspector]public int numberSelected = 0;
-    bool isGenerate;
     Camera mainCamera;
     List<GameObject> pieces = new List<GameObject>();
 
@@ -63,26 +62,22 @@ public class XepHinhSo : MonoBehaviour
         Instance = this;
     }
 
-    void OnEnable()
+    public void LoadData()
     {
         camera2D.gameObject.SetActive(false);
         camera3D.gameObject.SetActive(false);
-    }
-
-    void OnDestroy()
-    {
-        hasModel3D = false;
+        foreach (var pieces in pieceDic)
+        {
+            foreach (var item in pieces.Value)
+            {
+                Destroy(item.gameObject);
+            }        
+        }
         pieceDic.Clear();
-    }
-
-    void Start()
-    {
-        LoadData();
-    }
-
-    public void LoadData()
-    {
-        if(!hasModel3D)
+        colors.Clear();
+        pieces.Clear();
+        numberSelected = 0;
+        if (!hasModel3D)
         {
             if (string.IsNullOrEmpty(id))
                 id = paramDic.Keys.ToList()[0];
@@ -184,14 +179,8 @@ public class XepHinhSo : MonoBehaviour
             }
         }
 
-
-
-
-        
         SetPieceArrayColor(numberSelected, Color.gray);
         onLoadUIColorItem?.Invoke(colors);
-        isGenerate = true;
-
     }
 
     public void GenerateColorOfPiece(bool isMainModel)
@@ -206,8 +195,6 @@ public class XepHinhSo : MonoBehaviour
 
                 if (tempColor.CompareTwoColor(Color.white) || tempColor.a < alphaValue)
                     continue;
-
-               
 
                 if(index >= pieces.Count)
                 {
@@ -251,12 +238,6 @@ public class XepHinhSo : MonoBehaviour
                 index++;
             }
         }
-    }
-
-
-    void Update()
-    {
-       
     }
 
     public void SetPieceArrayColor(int number , Color color)

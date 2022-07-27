@@ -20,6 +20,7 @@ public class PixelNumberGame
 public class UIMainMenu : MonoBehaviour
 {
     public static string Key = "UserData";
+    public static UIMainMenu Instance;
     PixelNumberGame userDatas = new PixelNumberGame();
     [System.Serializable]
     public class MainMenuPixelArtDic : SerializableDictionary<string, PixelArtSpriteData> { }
@@ -27,7 +28,12 @@ public class UIMainMenu : MonoBehaviour
 
     public GameObject prefabPixelArtItem;
     public RectTransform content;
+    List<UIPixelArtItem> uIPixelArtItems = new List<UIPixelArtItem>();
 
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -52,6 +58,19 @@ public class UIMainMenu : MonoBehaviour
             pixelArtItem.id = item.id;
             pixelArtItem.mainMenu = this;
             pixelArtItem.SetImage(item.isPaited ? paramDic[item.id].textureModel : paramDic[item.id].textureModelGray);
+            uIPixelArtItems.Add(pixelArtItem);
+        }
+        OnLoadPixelColorScene(userDatas.pixelNumberDatas[0].id);
+    }
+
+    public void LoadData()
+    {
+        userDatas = Newtonsoft.Json.JsonConvert.DeserializeObject<PixelNumberGame>(PlayerPrefs.GetString(Key));
+        for(int i = 0; i< userDatas.pixelNumberDatas.Count; i++)
+        {
+            var pixelArtItem = uIPixelArtItems[i];
+            var item = userDatas.pixelNumberDatas[i];
+            pixelArtItem.SetImage(item.isPaited ? paramDic[item.id].textureModel : paramDic[item.id].textureModelGray);
         }
     }
 
@@ -60,6 +79,7 @@ public class UIMainMenu : MonoBehaviour
     {
         XepHinhSo.id = id;
         XepHinhSo.hasModel3D = paramDic[id].isModel3D;
-        SceneManager.LoadSceneAsync("XepHinhSo");
+        XepHinhSo.Instance.LoadData();
+        //SceneManager.LoadSceneAsync("XepHinhSo");
     }
 }
