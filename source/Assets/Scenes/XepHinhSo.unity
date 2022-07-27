@@ -3823,7 +3823,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3026974852742157730, guid: d8add7ec5d700aa49ae44d9b582027b4, type: 3}
       propertyPath: playOnAwake
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3026974852742157730, guid: d8add7ec5d700aa49ae44d9b582027b4, type: 3}
       propertyPath: ShapeModule.type
@@ -3859,7 +3859,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3026974852742157735, guid: d8add7ec5d700aa49ae44d9b582027b4, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d8add7ec5d700aa49ae44d9b582027b4, type: 3}

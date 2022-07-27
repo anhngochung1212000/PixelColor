@@ -40,7 +40,7 @@ public class UIPixelColor : MonoBehaviour
     void OnLoadUIColorItem(List<Color> colors)
     {
         content.anchoredPosition = new Vector2(0, content.anchoredPosition.y);
-        partical.Stop();
+        partical.gameObject.SetActive(false);
         uIAnimator.PlayAnimation(AnimSetupType.Intro);
         foreach (var item in colorItemDic)
         {
@@ -169,8 +169,8 @@ public class UIPixelColor : MonoBehaviour
                 CameraController.Instance.BackToRootPoint();
             if (CameraController3D.Instance != null && CameraController3D.Instance.gameObject.activeSelf)
                 CameraController3D.Instance.BackToRootPoint();
-           
-            partical.Play();
+
+            partical.gameObject.SetActive(true);
             UIMainMenu.Instance.LoadData();
             uIAnimator.PlayAnimation(AnimSetupType.Outro);
         }
