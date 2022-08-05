@@ -315,7 +315,7 @@
       <HintPath>Assets\DOTween\DOTween.dll</HintPath>
     </Reference>
     <Reference Include="Voxels">
-      <HintPath>Assets\Data\XepHinh_Voxel\Voxels\Voxels.dll</HintPath>
+      <HintPath>Assets\Data\Prefabs\PixelNumber\XepHinh_Voxel\Voxels\Voxels.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Plastic.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.17\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
