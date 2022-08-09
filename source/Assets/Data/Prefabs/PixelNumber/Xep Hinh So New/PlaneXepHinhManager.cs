@@ -21,26 +21,28 @@ public class PlaneXepHinhManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Init();
+        blocks = (int)Mathf.Max(this.Size.x, this.Size.y) / 10 + ((int)Mathf.Max(this.Size.x, this.Size.y) % 10 == 0 ? 0 : 1);
 
-        for (int j = 0; j < (int)this.Size.y; j++)
-        {
-            for (int i = 0; i < (int)this.Size.x; i++)
-            {
-                Color tempColor = this.GrayTex.texture.GetPixel(i, j);
+        //Init();
 
-                int xBlock = i / 10;
-                int xIndex = i % 10;
-                int yBlock = j / 10;
-                int yIndex = j % 10;
+        //for (int j = 0; j < (int)this.Size.y; j++)
+        //{
+        //    for (int i = 0; i < (int)this.Size.x; i++)
+        //    {
+        //        Color tempColor = this.GrayTex.texture.GetPixel(i, j);
 
-                int blockNum = xBlock + yBlock  * blocks;
-                int indexNum = xIndex + yIndex * 10;
+        //        int xBlock = i / 10;
+        //        int xIndex = i % 10;
+        //        int yBlock = j / 10;
+        //        int yIndex = j % 10;
+
+        //        int blockNum = xBlock + yBlock  * blocks;
+        //        int indexNum = xIndex + yIndex * 10;
 
 
-                lsBlocks[blockNum].SetMeshColor(indexNum * 2, tempColor);
-            }
-        }
+        //        lsBlocks[blockNum].SetMeshColor(indexNum * 2, tempColor);
+        //    }
+        //}
     }
 
     void Init()

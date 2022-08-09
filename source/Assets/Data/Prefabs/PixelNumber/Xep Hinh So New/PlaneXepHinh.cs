@@ -12,15 +12,22 @@ public class PlaneXepHinh : MonoBehaviour
     Vector3[] verNormal;
     Vector2[] meshUV;
     Vector2 cellSize;
+    Vector3[] vertices;
+    private void Awake()
+    {
+        MeshFilter = GetComponent<MeshFilter>();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
+        //blockIndex = int.Parse(gameObject.name.Substring(1, gameObject.name.Length - 1)) - 1;
         cellSize = new Vector2(1f / TexNumberSize.x, 1f / TexNumberSize.y);
         cloneMesh = MeshFilter.mesh;
         meshUV = cloneMesh.uv;
         verColor = new Color[cloneMesh.vertexCount];
         verNormal = new Vector3[cloneMesh.vertexCount];
+        vertices = cloneMesh.vertices;
         for (int i = 0; i < cloneMesh.vertexCount; i++)
         {
             verColor[i] = cloneMesh.colors[i];
