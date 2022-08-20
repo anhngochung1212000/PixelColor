@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class PlaneXepHinhManager : MonoBehaviour
@@ -7,7 +8,7 @@ public class PlaneXepHinhManager : MonoBehaviour
     public Texture2D MainTex;
     public Sprite GrayTex;
     public Mesh mesh;
-    public Vector2 Size = new Vector2(69, 65);
+    Vector2 Size = new Vector2(69, 65);
     public PlaneXepHinh PlaneXepHinh;
 
     List<PlaneXepHinh> lsBlocks = new List<PlaneXepHinh>();
@@ -22,27 +23,27 @@ public class PlaneXepHinhManager : MonoBehaviour
     void Start()
     {
         blocks = (int)Mathf.Max(this.Size.x, this.Size.y) / 10 + ((int)Mathf.Max(this.Size.x, this.Size.y) % 10 == 0 ? 0 : 1);
+        Size = new Vector2(GrayTex.texture.width, GrayTex.texture.height);
+        Init();
 
-        //Init();
+        for (int j = 0; j < (int)this.Size.y; j++)
+        {
+            for (int i = 0; i < (int)this.Size.x; i++)
+            {
+                Color tempColor = this.GrayTex.texture.GetPixel(i, j);
 
-        //for (int j = 0; j < (int)this.Size.y; j++)
-        //{
-        //    for (int i = 0; i < (int)this.Size.x; i++)
-        //    {
-        //        Color tempColor = this.GrayTex.texture.GetPixel(i, j);
+                int xBlock = i / 10;
+                int xIndex = i % 10;
+                int yBlock = j / 10;
+                int yIndex = j % 10;
 
-        //        int xBlock = i / 10;
-        //        int xIndex = i % 10;
-        //        int yBlock = j / 10;
-        //        int yIndex = j % 10;
-
-        //        int blockNum = xBlock + yBlock  * blocks;
-        //        int indexNum = xIndex + yIndex * 10;
+                int blockNum = xBlock + yBlock * blocks;
+                int indexNum = xIndex + yIndex * 10;
 
 
-        //        lsBlocks[blockNum].SetMeshColor(indexNum * 2, tempColor);
-        //    }
-        //}
+                lsBlocks[blockNum].SetMeshColor(indexNum * 2, tempColor);
+            }
+        }
     }
 
     void Init()
@@ -58,11 +59,11 @@ public class PlaneXepHinhManager : MonoBehaviour
                 pos.x = i;
                 pos.z = j;
 
-                PlaneXepHinh planeXepHinh = Instantiate(this.PlaneXepHinh);
+                PlaneXepHinh planeXepHinh = Instantiate(this.PlaneXepHinh,transform);
 
                 planeXepHinh.blockIndex = i + j * blocks;
                 planeXepHinh.gameObject.transform.position = pos;
-                //planeXepHinh.Init(mesh);
+                planeXepHinh.Init(mesh);
                 lsBlocks.Add(planeXepHinh);
 
                 //planeXepHinh.gameObject.name = name;
@@ -125,4 +126,39 @@ public class PlaneXepHinhManager : MonoBehaviour
 
         return tempPos;
     }
+
+#if UNITY_EDITOR
+
+    public void ExportMesh()
+    {
+
+        List<Mesh> tempMeshL = new List<Mesh>();
+
+        Mesh firstMesh = Instantiate(lsBlocks[0].MeshFilter.sharedMesh);
+        tempMeshL.Add(firstMesh);
+
+        AssetDatabase.CreateAsset(firstMesh, "Assets/"+ GrayTex.name+ ".asset");
+
+        for (int i = 1; i < lsBlocks.Count; i++)
+        {
+            Mesh tempMesh = Instantiate(lsBlocks[i].MeshFilter.sharedMesh);
+
+            AssetDatabase.AddObjectToAsset(tempMesh, firstMesh);
+
+            tempMeshL.Add(tempMesh);
+
+
+        }
+
+        for (int i = 0; i < lsBlocks.Count; i++)
+        {
+            lsBlocks[i].MeshFilter.sharedMesh = tempMeshL[i];
+        }
+
+        PrefabUtility.CreatePrefab("Assets/" + GrayTex.name + ".prefab", this.gameObject);
+
+
+        AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(firstMesh));
+    }
+#endif
 }

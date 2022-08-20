@@ -22,44 +22,44 @@ public class PlaneXepHinh : MonoBehaviour
     void Start()
     {
         //blockIndex = int.Parse(gameObject.name.Substring(1, gameObject.name.Length - 1)) - 1;
+        //cellSize = new Vector2(1f / TexNumberSize.x, 1f / TexNumberSize.y);
+        //cloneMesh = MeshFilter.mesh;
+        //meshUV = cloneMesh.uv;
+        //verColor = new Color[cloneMesh.vertexCount];
+        //verNormal = new Vector3[cloneMesh.vertexCount];
+        //vertices = cloneMesh.vertices;
+        //for (int i = 0; i < cloneMesh.vertexCount; i++)
+        //{
+        //    verColor[i] = cloneMesh.colors[i];
+        //    verNormal[i] = Vector3.zero;
+        //    meshUV[i] = cloneMesh.uv[i];
+        //}
+        //for (int i = 0; i < cloneMesh.triangles.Length; i += 3)
+        //    SetMeshNumber(i / 3, Random.Range(0, 17));
+    }
+
+    public void Init(Mesh mesh)
+    {
         cellSize = new Vector2(1f / TexNumberSize.x, 1f / TexNumberSize.y);
-        cloneMesh = MeshFilter.mesh;
+        cloneMesh = Instantiate(mesh);
+        cloneMesh.name = blockIndex.ToString();
         meshUV = cloneMesh.uv;
         verColor = new Color[cloneMesh.vertexCount];
         verNormal = new Vector3[cloneMesh.vertexCount];
-        vertices = cloneMesh.vertices;
+
         for (int i = 0; i < cloneMesh.vertexCount; i++)
         {
             verColor[i] = cloneMesh.colors[i];
             verNormal[i] = Vector3.zero;
             meshUV[i] = cloneMesh.uv[i];
         }
+
+        this.MeshFilter.mesh = cloneMesh;
+
         for (int i = 0; i < cloneMesh.triangles.Length; i += 3)
             SetMeshNumber(i / 3, Random.Range(0, 17));
+
     }
-
-    //public void Init(Mesh mesh)
-    //{
-    //    cellSize = new Vector2(1f / TexNumberSize.x, 1f / TexNumberSize.y);
-    //    cloneMesh = Instantiate(mesh);
-    //    cloneMesh.name = blockIndex.ToString();
-    //    meshUV = cloneMesh.uv;
-    //    verColor = new Color[cloneMesh.vertexCount];
-    //    verNormal = new Vector3[cloneMesh.vertexCount];
-
-    //    for (int i = 0; i < cloneMesh.vertexCount; i++)
-    //    {
-    //        verColor[i] = cloneMesh.colors[i];
-    //        verNormal[i] = Vector3.zero;
-    //        meshUV[i] = cloneMesh.uv[i];
-    //    }
-
-    //    this.MeshFilter.mesh = cloneMesh;
-
-    //    for (int i = 0; i < cloneMesh.triangles.Length; i += 3)
-    //        SetMeshNumber(i / 3, Random.Range(0, 17));
-
-    //}
 
     public void SetMeshNumber(int index, int number)
     {
