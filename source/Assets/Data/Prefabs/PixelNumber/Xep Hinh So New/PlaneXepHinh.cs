@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class ColorData
+{
+    public int index;
+    public Color color;
+    public Color colorGray;
+}
 public class PlaneXepHinh : MonoBehaviour
 {
     public MeshFilter MeshFilter;
@@ -13,6 +20,8 @@ public class PlaneXepHinh : MonoBehaviour
     Vector2[] meshUV;
     Vector2 cellSize;
     Vector3[] vertices;
+    public List<ColorData> colorDatas = new List<ColorData>();
+
     private void Awake()
     {
         MeshFilter = GetComponent<MeshFilter>();
